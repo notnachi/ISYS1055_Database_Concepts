@@ -1,0 +1,120 @@
+--1.3
+select * from department where descrip is not null
+
+--1.4
+select * from paper natural join author
+where acnum = 100
+
+select * from academic natural join author
+
+
+--1.5
+select acnum, givename, famname, count(panum) from 
+academic natural join author
+--where acnum in (select acnum from academic)
+group by acnum,givename,famname
+order by acnum asc
+
+SELECT academic.acnum,givename,famname,count(panum) as TotalPapers
+
+FROM academic 
+
+left outer join author on academic.acnum=author.acnum
+
+group by academic.acnum, givename, famname
+ORDER BY count(panum)
+ 
+--1.6
+select id, count(acnum) from
+interest natural join field
+where id like '%.1.%'
+group by id
+order by id asc
+
+--1.7
+select distinct deptnum, deptname, instname from 
+department natural join academic
+where acnum not in (select distinct acnum from interest)
+
+--1.8
+select acnum, famname, givename, deptnum, descrip
+from academic natural join department 
+where famname like 'C%'
+order by famname, givename
+
+--1.9
+select fieldnum, title, count(acnum) as "NO. ACADEMICS INTERESTED"
+from 
+field natural join interest 
+group by fieldnum, title
+order by fieldnum asc
+
+--1.10
+SELECT deptname,instname, COUNT(academic.acnum) as "TotalAcademics"
+
+FROM department
+
+INNER JOIN academic ON academic.deptnum = department.deptnum
+
+GROUP BY deptname,instname
+
+HAVING COUNT(academic.acnum) >= 10
+
+--1.11
+select distinct deptnum 
+from department natural join academic
+where (postcode >=3000 and postcode <=3999)
+AND title not like 'prof%'
+
+OR deptnum not in (select distinct deptnum from academic)
+order by deptnum asc
+
+select deptnum 
+from department
+where deptnum not in (select distinct deptnum from academic)
+
+
+Victoria University of Technology                                               
+
+--1.12
+write that dept ka quere here
+
+select deptnum, count(panum) from 
+academic natural join author
+--where acnum in (select acnum from academic)
+group by deptnum
+order by deptnum asc
+
+--1.13
+select deptnum, deptname from
+department natural join academic
+where acnum not in (select distinct acnum from author)
+
+--1.14
+select panum from author
+where exists (select distinct acnum from interest where descrip like '%data%')
+and acnum in (select distinct acnum from interest where descrip like '%data%')
+
+--1.15
+select id, field, title
+from field where fieldnum in
+(
+select fieldnum from field natural join interest group by fieldnum order by count(acnum) desc
+)
+
+select id, field.fieldnum, title, extra.occu 
+from field, (select fieldnum, count(acnum) as occu from field natural join interest group by fieldnum order by count(acnum) desc) extra 
+where rownum = 1
+and field.fieldnum = extra.fieldnum;
+
+
+
+
+
+
+
+
+
+
+
+
